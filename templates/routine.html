@@ -1,0 +1,38 @@
+{% extends 'basic.html' %}
+{% block title %}Routine{% endblock title %}
+{% block rot_active %}active{% endblock rot_active %}
+{% block body %}
+<!-- Schedule Table Starts here -->
+<section id="schedule">
+    <div class="container-fluid p-4" style="background-color: #141313; text-align: center;">
+        <h2 class="p-4" style="color: white;">Routine</h2>
+        <div class="container">
+        <table class="table table-light table-striped table-hover">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Schedule</th>
+                <th scope="col">Route</th>
+                <th scope="col">Fare</th>
+                <th scope="col">Bus type</th>
+                <th scope="col">Book Now</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% for i in routine %}
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{i.Schedule}}</td>
+                <td>{{i.route}}</td>
+                <td>{{i.fare}}</td>
+                <td>{{i.bus_type}}</td>
+                <td><a href="/book" class="btn btn-outline-primary btn-sm">Book now</a></td>
+                {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </section>
+    <!-- Schedule table ends here -->
+{% endblock body %}

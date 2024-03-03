@@ -1,0 +1,47 @@
+{% extends 'basic.html' %}
+{% block title %}
+Contact
+{% endblock title %}
+{% block con_active %}active{% endblock con_active %}
+{% block body %}
+<div class="container p-0 mt-4 px-4 m-md-4 mb-4">
+    <div class="row rounded g-0">
+        <div class="col col-md-6 d-none d-md-block">
+            <img style="width: 659px; height: 705px; border-radius: 20px;" src="https://res.cloudinary.com/di5ibac5c/image/upload/q_auto:best/v1678001846/photo-1632276536839-84cad7fd03b0_mkxo6w.jpg" alt="">
+        </div>
+        <div class="col col-md-6" style="background-color: rgb(15, 15, 15); padding-top: 140px; color: white; border-bottom-right-radius: 20px; border-top-right-radius: 20px;">
+            <form action="/contact" method="post">{% csrf_token %}
+                <h2 style="text-align: center;">Feel free to contact us</h2>
+                <div class="row px-4 pt-4">
+                    <div class="col col-md-6">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">First Name</label>
+                            <input type="name" name="fname" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
+                          </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+                            <input type="name" name="lname" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
+                          </div>
+                    </div>
+                </div>
+                <div class="mb-3 px-4">
+                    <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                    <input name="email" type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                  </div>
+                <div class="mb-3 px-4">
+                    <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
+                    <input name="phone" type="number" class="form-control" id="exampleFormControlInput1" placeholder="Enter your phone number">
+                </div>
+                <div class="mb-3 mx-4">
+                    <label for="exampleFormControlTextarea1" class="form-label">Discuss Your Problem</label>
+                    <textarea name="prblm" class="form-control" placeholder="Feel free to discuss with us" id="exampleFormControlTextarea1" rows="5"></textarea>
+                  </div>
+                <button type="submit" class="mb-4 ms-4 btn btn-sm btn-outline-light text-center">Contact</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock body %}

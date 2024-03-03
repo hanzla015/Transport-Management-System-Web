@@ -1,0 +1,290 @@
+{% extends 'basic.html' %}
+{% block title %}Create account {% endblock title %}
+{% block body %}
+<div class="container p-0 mt-4 px-4 m-md-4">
+    <div class="row rounded g-0">
+        <div class="col col-md-6 d-none d-md-block">
+            <img style="width: 659px; height: 855px; border-radius: 20px;" src="https://res.cloudinary.com/di5ibac5c/image/upload/q_auto:best/v1678001846/photo-1632276536839-84cad7fd03b0_mkxo6w.jpg" alt="">
+        </div>
+        <div class="col col-md-6" id="form_side" style="background-color: rgb(15, 15, 15); padding-top: 100px; color: white; border-bottom-right-radius: 20px; border-top-right-radius: 20px;">
+          {% if not otp %}
+          <form action="\register" method="post" name="signupForm">{% csrf_token %}
+            <h2 style="text-align: center;">Create your account</h2>
+                <div class="row px-4 pt-4">
+                    <div class="col col-md-6">
+                      <div class="mb-3" id="fname">
+                        <label for="exampleFormControlInput1" class="form-label">First Name</label>
+                        <input type="name" name="fname" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
+                      </div>
+                    </div>
+                    <div class="col col-md-6" id="lname">
+                      <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+                        <input type="name" name="lname" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
+                      </div>
+                    </div>
+                </div>
+                <div class="mb-3 px-4" id="email">
+                    <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                    <input name="email" type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                  </div>
+                <div class="mb-3 px-4" id="phone">
+                  <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
+                  <input name="phone" type="number" class="form-control" id="exampleFormControlInput1" placeholder="Enter your phone number">
+                </div>
+                <div class="mb-3 px-4" id="uname">
+                    <label for="exampleFormControlInput1" class="form-label">Username</label>
+                    <input name="username" type="username" class="form-control" id="exampleFormControlInput1" placeholder="Create your Username">
+                </div>
+                <div class="row px-4">
+                  <div class="col col-md-6">
+                    <div class="mb-3" id="pwd">
+                        <label for="exampleFormControlInput1" class="form-label">Password</label>
+                        <input type="password" onkeyup="strength();" id="pass1" name="pass1" class="form-control" id="exampleFormControlInput1" placeholder="Enter Password">
+                        <div id="msg"></div>
+                    </div>
+                  </div>
+                  <div class="col col-md-6" id="cpwd">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Confirm Password</label>
+                        <input type="password" onkeyup="againStrength();"  id="pass2" name="pass2" class="form-control" id="exampleFormControlInput1" placeholder="Confirm Your Password">
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3 px-4">
+                  <label for="inputState" class="form-label">Gender</label>
+                  <select name="gender" id="inputState" class="form-select">
+                    <option selected>Choose an option...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Custom">Custom</option>
+                  </select>
+                </div>
+                <div class="mb-3 mx-3 form-check">
+                  <input type="checkbox" onclick="showPass();" class="form-check-input field" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1" style="color: white;">Show Password</label>
+              </div>
+                <small class="px-4 pb-4">If you are already a member <a href="/login">click here</a> to login.</small><br>
+                <button type="submit" class="m-4 btn btn-sm btn-outline-light text-center">Sign Up</button>
+            </form>
+            
+            {% else %}
+            <script>
+              document.getElementById('form_side').innerHTML = `<div class="ms-3"><h2 class="mt-4 text-white text-center">Verify account on</h2>
+              <h2 class="text-center" style="color: rgb(238, 233, 233);">BD Transports</h2>
+              <form action="/account-activation" name="signupForm" onsubmit="return validateotp()" method="post">{% csrf_token %}
+                  <div class="mb-4 mt-4 me-4" id="otp">
+                      <label for="exampleFormControlInput1" style="color: rgb(238, 233, 233);" class="form-label text-uppercase fw-bold fs-6">OTP</label>
+                      <input type="number" class="form-control field" id="otp_typed" id="otp" name="otp">
+                      <div class="error" style="color: red; font-weight: bold;"></div>
+                      <input type="hidden" name="user" value="{{user}}">
+                  </div>
+                  <small><a class="resend-otp" style="text-decoration:none; color:white;" href="#" onclick="ReSendOTP('{{user.username}}', 'resendOTPmess')" ><i id="resendOTPmess">Resend</i><i> OTP?</i></a></small>
+                  <br><small style="color: white;"><small>Note: If you don't recieve any email in inbox try checking your spam tab.</small>
+                  <br><button class="btn btn-outline-light rounded-pill mb-3 mt-4 text-uppercase fw-bold fs-6" type="submit">Verify OTP</button>
+              </form></div>`
+        </script>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+{% block js %}
+<script>
+  function clearErrors()
+  {
+    errors = document.getElementsByClassName("error");
+    for(let item of errors)
+    {
+        item.innerHTML = "";
+    } 
+  }
+
+// set errors inside tags of id
+
+  function setError(div_id, error){
+    // id = div id
+    element = document.getElementById(div_id)
+    element.getElementsByClassName("error")[0].innerHTML = error;
+  }
+
+  function validateForm()
+  {
+    var returnVal = true;
+    clearErrors();
+
+    // Taking data from form and validating the data
+    // First Form then name set in input tag
+
+    // Managing First Name
+    var Fname = document.forms['signupForm']["fname"].value;
+    if (Fname.length<3){
+        setError("fname", "*First name is too short");
+        returnVal = false;
+    }
+    if (Fname.length>10){
+        setError("fname", "*First name is too long");
+        returnVal = false;
+    }
+
+    // Last Name Validation
+    var Lname = document.forms['signupForm']["lname"].value;
+    if (Lname.length<3){
+        setError("lname", "*Last name is too short");
+        returnVal = false;
+    }
+    if (Lname.length>10){
+        setError("lname", "*Last name is too long");
+        returnVal = false;
+    }
+
+    // Username Validation
+    var Uname = document.forms['signupForm']['username'].value;
+    if (Uname.length<6){
+        setError("uname", "*Username cannot be less then 6 chracters!");
+        returnVal = false;
+    }
+    if (Uname.length>30){
+        setError("uname", "*Username cannot be greater then 30 chracters!");
+        returnVal = false;
+    }
+
+    // Email Validation
+    var email = document.forms['signupForm']["email"].value;
+    if (email.length>50){
+        setError("email", "*Enter a valid email address");
+        returnVal = false;
+    }
+
+    // phone number validation
+    var phone = document.forms['signupForm']["phone"].value;
+    if (phone.length<10){
+        setError("phone", "*Phone number must contains 11 digits.");
+        returnVal = false;
+    }
+    if(phone.length>11){
+        setError("phone", "*Phone number can not be greater than 11 digits.");
+        returnVal = false;
+    }
+
+    // matching password and confirm password
+    var password = document.forms['signupForm']["pass1"].value;
+    var confirmPass = document.forms['signupForm']["pass2"].value;
+    if (password!=confirmPass){
+        setError("pwd", "*Password does not match");
+        returnVal = false;
+    }
+    if (password.length<8){
+        setError("pwd", "*Password can not be less then 8!");
+        returnVal = false;
+    }
+    if (confirmPass.length<8){
+        setError("cpwd", "*Password can not be less then 8!");
+        returnVal = false;
+    }
+
+
+    return returnVal;
+  }
+      
+  function validateotp(){
+      var returnVal = true;
+      clearErrors();
+      // Validating Otp 
+      var otp = document.forms['signupForm']["otp"].value;
+      if (otp.length<6){
+          setError("otp", "OTP cannot be less than 6 digits!");
+          returnVal = false;
+      }
+      if (otp.length>6){
+          setError("otp", "OTP cannot be greater than 6 digits!");
+          returnVal = false;
+      }
+  
+      return returnVal;
+  }
+
+  function strength(){
+      var pwdInput = document.getElementById('pass1');
+      var password1 = document.forms['signupForm']['pass1'].value;
+      var msg = document.getElementById('msg');
+      
+      if (password1.length<6){
+          msg.innerHTML = "Weak"
+          msg.style.color = "red"
+          pwdInput.style.borderColor = "red"
+          pwdInput.style.borderWidth = "2px"
+      }
+      
+      if (password1.length>=6){
+          msg.innerHTML = "Average"
+          msg.style.color = "orange"
+          pwdInput.style.borderColor = "orange"
+          pwdInput.style.borderWidth = "2px"
+      }
+      
+      if (password1.length>=8){
+          msg.innerHTML = "Strong"
+          msg.style.color = "lightgreen"
+          pwdInput.style.borderColor = "lightgreen"
+          pwdInput.style.borderWidth = "2px"
+      }
+      
+      if (password1.length>=10){
+          msg.innerHTML = "Very Strong"
+          msg.style.color = "green"
+          pwdInput.style.borderColor = "green"
+          pwdInput.style.borderWidth = "2px"
+      }
+      
+  }
+  
+  function againStrength(){
+      var again = document.getElementById('pass2'); 
+      var password2 = document.forms['signupForm']['pass2'].value;
+      var msg = document.getElementById('msg');
+      if (password2.length<6){
+          msg.innerHTML = "Weak"
+          msg.style.color = "red"
+          again.style.borderColor = "red"
+          again.style.borderWidth = "2px"
+      }
+      if (password2.length>=6){
+          msg.innerHTML = "Average"
+          msg.style.color = "orange"
+          again.style.borderColor = "orange"
+          again.style.borderWidth = "2px"
+      }
+      if (password2.length>=8){
+          msg.innerHTML = "Strong"
+          msg.style.color = "lightgreen"
+          again.style.borderColor = "lightgreen"
+          again.style.borderWidth = "2px"
+      }
+      if (password2.length>=10){
+          msg.innerHTML = "Very Strong"
+          msg.style.color = "green"
+          again.style.borderColor = "green"
+          again.style.borderWidth = "2px"
+      }
+
+  }
+  
+  function showPass(){
+      var password = document.getElementById('pass1');
+      var againPassword = document.getElementById('pass2');
+
+      if(password.type === 'password' || againPassword.type === 'password'){
+          password.type = "text";
+          againPassword.type = "text"
+      }
+      else
+      {
+          password.type = "password";
+          againPassword.type = "password"
+      }
+  }
+
+</script>
+{% endblock js %}

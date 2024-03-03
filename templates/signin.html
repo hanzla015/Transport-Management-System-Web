@@ -1,0 +1,135 @@
+{% extends 'basic.html' %}
+{% block title %}Login{% endblock title %}
+{% block body %}
+<div class="container p-0 mt-4 px-4 m-md-4">
+    <div class="row rounded g-0">
+        <div class="col col-md-6 d-none d-md-block">
+            <img style="width: 659px; height: 600px; border-radius: 20px;" src="https://res.cloudinary.com/di5ibac5c/image/upload/q_auto:best/v1678001846/photo-1632276536839-84cad7fd03b0_mkxo6w.jpg" alt="">
+        </div>
+        <div class="col col-md-6" id="form_side" style="background-color: rgb(15, 15, 15); padding-top: 150px; color: white; border-bottom-right-radius: 20px; border-top-right-radius: 20px;">
+            {% if not otp %}
+            <form name="loginForm" action="\login" method="post" onsubmit="validateForm();">{% csrf_token %}
+                <h2 style="text-align: center;">Sign In</h2>
+                <div class="mb-3 px-4 pt-4" id="uname">
+                    <label for="exampleFormControlInput1" class="form-label">Username or Email address</label>
+                    <input name="email" id="email" class="form-control" id="exampleFormControlInput1" placeholder="Enter your username or email">
+                    <div class="error" style="font-weight: bold; color: red;"></div>
+                </div>
+                <div class="mb-3 px-4" id="pwd">
+                    <label for="exampleFormControlInput1" class="form-label">Password</label>
+                    <input type="password" id="pass" name="pass" class="form-control" id="exampleFormControlInput1" placeholder="Enter your password">
+                    <div class="error" style="font-weight: bold; color: red;"></div>
+                </div>
+                <div class="mb-3 mx-3 form-check">
+                    <input type="checkbox" onclick="showPass();" class="form-check-input field" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1" style="color: white;">Show Password</label>
+                </div>
+                <small class="px-4 pb-4">If you are not a member <a href="\register">click here</a> to register.</small><br>
+                <button type="submit" class="m-4 btn btn-sm btn-outline-light text-center">Sign In</button>
+            </form>
+            {% else %}
+            <script>
+                document.getElementById('form_side').innerHTML = `<div class="ms-3"><h2 class="mt-4 text-white text-center">Verify account on</h2>
+                    <h2 class="text-center" style="color: rgb(238, 233, 233);">BD Transports</h2>
+                    <form action="/account-activation" name="otpForm" onsubmit="return validateotp()" method="post">{% csrf_token %}
+                        <div class="mb-4 mt-4 me-4" id="otp">
+                            <label for="exampleFormControlInput1" style="color: rgb(238, 233, 233);" class="form-label text-uppercase fw-bold fs-6">OTP</label>
+                            <input type="number" class="form-control field" id="otp_typed" id="otp" name="otp">
+                            <div class="error" style="color: red; font-weight: bold;"></div>
+                            <input type="hidden" name="user" value="{{user}}">
+                        </div>
+                        <small><a class="resend-otp" style="text-decoration:none; color:white;" href="#" onclick="ReSendOTP('{{user.username}}', 'resendOTPmess')" ><i id="resendOTPmess">Resend</i><i> OTP?</i></a></small>
+                        <br><small style="color: white;"><small>Note: If you don't recieve any email in inbox try checking your spam tab.</small>
+                        <br><button class="btn btn-outline-light rounded-pill mb-3 mt-4 text-uppercase fw-bold fs-6" type="submit">Verify OTP</button>
+                    </form></div>`
+            </script>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}
+{% block js %}
+<script>
+    function clearErrors(){
+
+        errors = document.getElementsByClassName("error");
+        for(let item of errors)
+        {
+            item.innerHTML = "";
+        } 
+    }
+    
+    // set errors inside tags of id
+    
+    function setError(div_id, error){
+        // id = div id
+        element = document.getElementById(div_id)
+        element.getElementsByClassName("error")[0].innerHTML = error;
+    }
+    
+    function validateForm(){
+        var returnVal = true;
+        clearErrors();
+    
+        // Username Validation
+        var Uname = document.forms['loginForm']['email'].value;
+        if (Uname.length<6){
+            setError("uname", "*Username cannot be less than 6 characters!");
+            returnVal = false;
+        }
+        if (Uname.length>75){
+            setError("uname", "*Username cannot be greater than 75 characters!");
+            returnVal = false;
+        }
+    
+        // matching password and confirm password
+        var password1 = document.forms['loginForm']["pass"].value;
+        if (password1.length<8){
+            setError("pwd", "*Password can not be less than 8 digits!");
+            returnVal = false;
+        }
+        return returnVal;
+    }
+    
+    function validateotp(){
+        var returnVal = true;
+        clearErrors();
+        // Validating Otp 
+        var otp = document.forms['otpForm']["otp"].value;
+        if (otp.length<6){
+            setError("otp", "OTP cannot be less than 6 digits!");
+            returnVal = false;
+        }
+        if (otp.length>6){
+            setError("otp", "OTP cannot be greater than 6 digits!");
+            returnVal = false;
+        }
+    
+        return returnVal;
+    }
+    
+    function showPass(){
+        var x = document.getElementById('pass');
+
+        if(x.type === 'password'){
+            x.type = "text";
+        }
+        else{
+            x.type = "password";
+        }
+    }
+    function ReSendOTP(username, mess_id) {
+
+        mess = document.getElementById(mess_id);
+        mess.innerText = "Sending...";
+        $.ajax({
+          type: 'GET',
+          url: '/resend_otp',
+          data: { user: username },
+          success: function (data) {
+            mess.innerText = "Resend";
+          }
+        })
+      };
+</script>
+{% endblock js %}

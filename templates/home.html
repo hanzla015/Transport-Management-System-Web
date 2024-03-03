@@ -1,0 +1,101 @@
+{% extends 'basic.html' %}
+{% block title %}Home{% endblock title %}
+{% block home_active %}active{% endblock home_active %}
+{% block body %}
+    <!-- carousel start here -->
+    <div class="container-fluid" style="background-color: #141313;">
+        <div class="container pt-4 pb-4">
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+            {% for i in carousel %}
+                <div class="carousel-item {% if forloop.counter0 == 0%} active {% endif %}">
+                <img src="{{i.image_link}}" class="" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{i.head_line}}</h5>
+                    <p>{{i.desc_line}}</p>
+                </div>
+                </div>
+            {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        </div>
+    </div>
+    <!-- carousel ends here -->
+
+    <!-- About Starts here -->
+    <section id="about">
+    <div class="container-fluid p-4" style="background-color: black;">
+        <h2 style="color: white; text-align: center;">About Us</h2>
+        <p style="color: white;" class="px-4 pt-4">
+        Welcome to BD Transport! We are a leading provider of transportation services for passengers using buses, operating a fleet of well-maintained buses with experienced and trained drivers and staff.
+        </p>
+        <p style="color: white;" class="px-4">
+        Our company is dedicated to providing safe, reliable, and convenient transportation options to our customers. Whether you need to travel to a nearby city or a popular tourist destination, we have a range of services to meet your needs. Our services include regular scheduled bus routes, charter services for special events or groups, and shuttle services to and from airports or other transportation hubs.
+        </p>
+        <p style="color: white;" class="px-4">
+        We understand that our customers have different needs and preferences, which is why we offer customizable services that can be tailored to meet your specific requirements. Our booking system is user-friendly, and our rates are competitive to ensure that you get the best value for your money.
+        </p>
+        <p style="color: white;" class="px-4 pb-4">
+        Thank you for considering our bus transport company for your travel needs. We look forward to serving you and providing you with a seamless transportation experience.
+        </p>
+        <div class="row">
+            <div class="col col-md-4"></div>
+            <div class="col col-md-4 text-center">
+                <a href="/contact" class="rounded-pill btn btn-small btn-outline-light">Contact Us</a>
+            </div>
+            <div class="col col-md-4"></div>
+        </div>
+    </div>
+    </section>
+    <!-- About ends here -->
+
+    <!-- Schedule Table Starts here -->
+    <section id="schedule">
+    <div class="container-fluid p-4" style="background-color: #141313; text-align: center;">
+        <h2 class="p-4" style="color: white;">Routine</h2>
+        <div class="container">
+        <table class="table table-light table-striped table-hover">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Schedule</th>
+                <th scope="col">Route</th>
+                <th scope="col">Fare</th>
+                <th scope="col">Bus type</th>
+                <th scope="col">Book Now</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% for i in routines %}
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{i.Schedule}}</td>
+                <td>{{i.route}}</td>
+                <td>{{i.fare}}</td>
+                <td>{{i.bus_type}}</td>
+                <td><a href="/book" class="btn btn-outline-primary btn-sm">Book now</a></td>
+                {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+        <a href="/routines" class="btn btn-outline-light btn-large rounded-pill">
+            View All
+        </a>
+        </div>
+    </div>
+    </section>
+    <!-- Schedule table ends here -->
+{% endblock body %}
